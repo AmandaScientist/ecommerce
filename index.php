@@ -2,31 +2,31 @@
 //Configurando o projeto "loja virtual"
 //banco mysql - workbench
 
+//configuração do 'slim	'
+
 //require_once () -> requer_uma vez. O PHP irá verificar se o arquivo já foi incluído, e se sim,
 //não inclui (require) novamente.
 require_once("vendor/autoload.php");
 
+use \Slim\Slim; //use eh namespace
+use \Hcode\Page;
+
 //Slim framework -> é um micro-framework bastante leve e prático, possui como principal característica a 
 //implementação RESTful, facilita a criação de APIs de pequeno ou médio porte de maneira organizada
-$app = new \Slim\Slim();
+$app = new Slim();
 
 $app->config('debug', true);
 
-$app->get('/', function() {
+$app->get('/', function() { //qual eh a rota q estou chamando /
     
-	//criando a classe sql
-	// a barra investida '\' vem do namespace
-	$sql = new Hcode\DB\Sql();
+	//criacao da variavel
+	//chama o construtor
+	$page = new Page();
 
-	//executando uma quary (consulta)
-	$results = $sql->select("SELECT * FROM tb_users"); //tabela no banco
-
-	//exibe na tela
-	echo json_encode($results);
-
+	$page->setTpl("index"); //adiciona o arquivo h1 (index)
 });
 
-$app->run();
+$app->run(); //depois 	q tudo carrega, ai eh executado (roda a aplicacao)
 
 //composer.json:
 //Esse arquivo é responsável por conter todas as dependências do projeto e suas versões.
