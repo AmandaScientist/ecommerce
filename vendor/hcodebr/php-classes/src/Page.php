@@ -20,7 +20,7 @@ class Page {
 	];
 
 	 //método mágico construtor
-	public function __construct($opts = array())
+	public function __construct($opts = array(), $tpl_dir = "/view/")
 	{
 
 		$this->options = array_merge($this->defaults, $opts); //mescla os arrays e gurda no options
@@ -29,7 +29,7 @@ class Page {
         // config
 		$config = array(
 		    "base_url"      => null,
-		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/views/", //vai trazer onde estah a paginas/diretorio
+		    "tpl_dir"       => $_SERVER['DOCUMENT_ROOT']."/$tpl_dir/", //vai trazer onde estah a paginas/diretorio
 		    "cache_dir"     => $_SERVER['DOCUMENT_ROOT']."/views-cache/",
 		    "debug"         => false // false, nao vamos precisar
 		);

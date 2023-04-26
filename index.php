@@ -10,6 +10,7 @@ require_once("vendor/autoload.php");
 
 use \Slim\Slim; //use eh namespace
 use \Hcode\Page;
+use \Hcode\pageAdmin;
 
 //Slim framework -> é um micro-framework bastante leve e prático, possui como principal característica a 
 //implementação RESTful, facilita a criação de APIs de pequeno ou médio porte de maneira organizada
@@ -26,7 +27,20 @@ $app->get('/', function() { //qual eh a rota q estou chamando /
 	$page->setTpl("index"); //adiciona o arquivo h1 (index)
 });
 
+//rota da administração
+$app->get('/admin', function() { //qual eh a rota q estou chamando /
+    
+	//criacao da variavel
+	//chama o construtor
+	$page = new pageAdmin();
+
+	$page->setTpl("index"); //adiciona o arquivo h1 (index)
+});
+
+
 $app->run(); //depois 	q tudo carrega, ai eh executado (roda a aplicacao)
+
+
 
 //composer.json:
 //Esse arquivo é responsável por conter todas as dependências do projeto e suas versões.
