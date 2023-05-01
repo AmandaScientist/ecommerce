@@ -5,8 +5,8 @@
 
 namespace Hcode;
 
-//classe pageAdmin
-class pageAdmin extends Page {
+//classe PageAdmin
+class PageAdmin extends Page {
 
     public function __construct($opts = array(), $tpl_dir = "/views/admin/"){
 
