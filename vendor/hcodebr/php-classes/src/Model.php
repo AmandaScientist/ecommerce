@@ -9,17 +9,17 @@ class Model {
 	//tem todos os valores dos campos
 	private $values = [];
 
-	public function setData($data)
-	{
+	//public function setData($data)
+	//{
 
-		foreach ($data as $key => $value)
-		{
+		//foreach ($data as $key => $value)
+		//{
 
-			$this->{"set".$key}($value);
+			//$this->{"set".$key}($value);
 
-		}
+		//}
 
-	}
+	//}
 
 	public function __call($name, $args)
 	{
@@ -29,10 +29,10 @@ class Model {
 		$method = substr($name, 0, 3);
 
 		//qual o nome do campo
-		$fieldName = substr($name, 3, strlen($name));
+		//$fieldName = substr($name, 3, strlen($name));
 
-		if (in_array($fieldName, $this->fields))
-		{
+		//if (in_array($fieldName, $this->fields))
+		//{
 			
 			switch ($method)
 			{
@@ -47,7 +47,7 @@ class Model {
 
 			}
 
-		}
+		//}
 
 	}
 
@@ -56,13 +56,14 @@ class Model {
 
 		foreach ($data as $key => $value) {
 
+			//tudo q é dinamico no PHP é entre chaves
 			$this-> {"set".$key}($value);
 		}
 	}
 
 	public function getValues()
 	{
-
+		//retorno do atributo
 		return $this->values;
 
 	}

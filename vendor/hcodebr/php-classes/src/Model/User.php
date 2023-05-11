@@ -12,18 +12,19 @@ class User extends Model {
 
 	const SESSION = "User";
 
-	protected $fields = [
-		"iduser", "idperson", "deslogin", "despassword", "inadmin", "dtergister"
-	];
+	//protected $fields = [
+		//"iduser", "idperson", "deslogin", "despassword", "inadmin", "dtregister"
+	//];
 
-	public static function login($login, $password):User
+	//user
+	public static function login($login, $password)
 	{
 
 		//acessando o banco de dados
-		$db = new Sql();
+		$sql = new Sql();
 
 		//acessando a consulta
-		$results = $db->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
+		$results = $sql->select("SELECT * FROM tb_users WHERE deslogin = :LOGIN", array(
 			":LOGIN"=>$login
 		));
 
@@ -63,7 +64,7 @@ class User extends Model {
 	{
 
 		if (
-			!isset($_SESSION[User::SESSION])
+			!isset($_SESSION[User::SESSION]) //se ela não for definida/redirecionada
 			|| 
 			!$_SESSION[User::SESSION] //se for falsa
 			||

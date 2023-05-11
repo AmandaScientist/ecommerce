@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'hcodebr/ecommerce',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '9105a7bf58218b1b61b5538561a6df496b41c188',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'hcodebr/ecommerce' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '9105a7bf58218b1b61b5538561a6df496b41c188',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
