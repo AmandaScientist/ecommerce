@@ -1,5 +1,5 @@
 <?php 
-//classe Model
+//class Model
 
 //essa classe fica no namespace principal
 namespace Hcode;
@@ -9,31 +9,16 @@ class Model {
 	//tem todos os valores dos campos
 	private $values = [];
 
-	//public function setData($data)
-	//{
-
-		//foreach ($data as $key => $value)
-		//{
-
-			//$this->{"set".$key}($value);
-
-		//}
-
-	//}
-
 	public function __call($name, $args)
 	{
-		//para saber s eh um metodo get ou set
+		//para saber se um metodo get ou set
 		//substr -> substring
 		// 3 quer dizer a quantidade
 		$method = substr($name, 0, 3);
 
 		//qual o nome do campo
-		//$fieldName = substr($name, 3, strlen($name));
+		$fieldName = substr($name, 3, strlen($name));
 
-		//if (in_array($fieldName, $this->fields))
-		//{
-			
 			switch ($method)
 			{
 
@@ -47,8 +32,6 @@ class Model {
 
 			}
 
-		//}
-
 	}
 
 	//chama os metodos automaticamente
@@ -56,7 +39,7 @@ class Model {
 
 		foreach ($data as $key => $value) {
 
-			//tudo q é dinamico no PHP é entre chaves
+			//tudo que é dinamico no PHP é entre chaves
 			$this-> {"set".$key}($value);
 		}
 	}

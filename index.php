@@ -1,6 +1,6 @@
 <?php 
-//Configurando o projeto "loja virtual"
-//banco mysql - workbench
+//Configurando o projeto "Ecommerce"
+//banco mysql - workbench 8
 
 //configuração do 'slim	'
 
@@ -17,32 +17,35 @@ use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 
 //Slim framework -> é um micro-framework bastante leve e prático, possui como principal característica a 
-//implementação RESTful, facilita a criação de APIs de pequeno ou médio porte de maneira organizada
+//implementação RESTful, criação de APIs de pequeno ou médio porte.
 $app = new Slim();
 
 $app->config('debug', true);
 
-$app->get('/', function() { //qual eh a rota q estou chamando /
+//ROTAS
+
+//qual a rota que estou chamando '/'
+$app->get('/', function() { 
     
-	//criacao da variavel
 	//chama o construtor
+
 	$page = new Page();
 
-	$page->setTpl("index"); //adiciona o arquivo h1 (index)
+	//adiciona o arquivo h1 (index)
+	$page->setTpl("index"); 
 });
 
-//rota da administração
-$app->get('/admin', function() { //qual eh a rota q estou chamando /
+//rota para a administração (admin)
+$app->get('/admin', function() {
 
-	//pra saber s estah logado
+	//pra saber se está logado
 	//:: metodo estatico
-	User::verifyLogin();
+	//User::verifyLogin();
     
-	//criacao da variavel
-	//chama o construtor
 	$page = new PageAdmin();
 
-	$page->setTpl("index"); //adiciona o arquivo h1 (index)
+	//adiciona o arquivo h1 (index)
+	$page->setTpl("index"); 
 });
 
 //rota para o login
@@ -58,12 +61,11 @@ $app->get('/admin/login', function(){
 		"footer"=>false
 	]);
 
-	//chamando o template q foi criado no login.html
+	//chamando o template que foi criado no login.html
 	$page->setTpl("login");
-
 });
 
-//criando uma rota post
+//criando uma rota post para o login
 $app->post('/admin/login', function(){
 
 	//validando o login
@@ -74,10 +76,9 @@ $app->post('/admin/login', function(){
 	header("Location: /admin");
 	exit; //para parar a execucao
 
-
 });
 
-//rota do logout
+//rota para o logout
 $app->get('/admin/logout', function() {
 
 	User::logout();
@@ -87,15 +88,125 @@ $app->get('/admin/logout', function() {
 	exit;
 });
 
-$app->run(); //depois 	q tudo carrega, ai eh executado (roda a aplicacao)
+//rota para listar todos os usuários
+$app -> get("/admin/users/", function() {
+
+	User::verifyLogin();
+
+	//rendenrizar
+	$users = User::listAll();
+
+	$page = new PageAdmin();
+
+	//chamando o template que foi criado no login.html
+	$page->setTpl("users", array(
+		"users"=>$users
+	));
+
+});
+
+//rota para o create (criar usuário)
+$app->get("/admin/users/create", function () { 
+
+	//verifica se  o usuário está logado na aplicação
+	User::verifyLogin(); 
+
+	$page = new PageAdmin(); 
+
+	$page->setTpl("users-create"); 
+});
+
+//rota para excluir usuário
+$app->get("/admin/users/:iduser/delete", function($iduser){
+
+	User::verifyLogin();
+
+	$user = new User();
+
+	//carrega o usuário
+	$user->get((int)$iduser);
+
+	$user->delete();
+
+	header("Location: /admin/users");
+	exit;
+
+});
+
+//rota para o update (atualizar usuário)
+//iduser -> usuário em especifico para atualizar
+$app ->get("/admin/users/:iduser", function($iduser) {
+
+	User::verifyLogin();
+
+	$user = new User();
+
+	//carrega o usuário
+	$user->get((int)$iduser);
+
+	$page = new PageAdmin();
+
+	//chamando o template que foi criado no login.html
+	$page->setTpl("users-update", array(
+		"user"=>$user->getValues()
+	 ));
+
+});
+
+//rota para salvar o usuário que foi criado
+$app->post("/admin/users/create", function(){
+
+	User::verifyLogin();
+
+	$user = new User();
+
+	//se o inadmin (administrador) já foi definido
+	//caso sim, o valor é 1 , caso não o valor é 0
+	$_POST["inadmin"] = (isset($_POST["inadmin"]))? 1:0;
+
+	//password_hash -> cria um novo hash de senha
+	$_POST['despassword'] = password_hash($_POST["despassword"], PASSWORD_DEFAULT, [
+
+		"cost"=>12
+
+	]);
+
+	$user->setData($_POST);
+
+	//save -> executar o insert no BD
+	$user->save();
+
+	//visualizar na tabela
+	header("Location: /admin/users");
+	exit;
+});
+
+//rota para salvar a edição do usuário (update)
+$app->post("/admin/users/:iduser", function($iduser) {
+
+    User::verifyLogin();
+
+    $user = new User();
+
+	//fazendo a validação
+	$_POST["inadmin"] = (isset($_POST["inadmin"]))?1:0;
+
+	//carregando os usuários (dados)
+    $user->get((int)$iduser);
+
+    $user->setData($_POST);
+
+    $user->update();
+
+    header("Location: /admin/users");
+    exit;
+});
 
 
+$app->run(); //depois que tudo é carregado, é executado (roda a aplicacao)
 
-//composer.json:
-//Esse arquivo é responsável por conter todas as dependências do projeto e suas versões.
-//lista as dependências do projeto e suas versões
 
-//composer.lock:
-//Este ficheiro é importante para o composer saber as versões específicas dos packages q foram instaladas.
-//O lock é criado toda vez q é instalado ou atualizado o composer.
+//composer.json: lista as dependências do projeto e suas versões
+//composer.lock: O lock é criado toda vez que é instalado ou atualizado o composer.
+
  ?>

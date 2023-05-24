@@ -1,8 +1,8 @@
 <?php 
-//vai servir de base para todas as paginas 
-//gerencias as telas html
+//serve de base para todas as paginas 
+//gerencia as telas html
 
-//especifica onde a classe estah -> namespace
+//especifica onde a classe está -> namespace
 namespace Hcode;
 
 //namespace rain
@@ -10,7 +10,7 @@ use Rain\Tpl;
 
 class Page {
 
-	//atributo privado
+	//atributos privado
 	private $tpl;
 	private $options = [];
 	private $defaults = [
@@ -19,20 +19,19 @@ class Page {
 		"data"=>[]
 	];
 
-	 //método mágico construtor
+	//método mágico construct
 	public function __construct($opts = array(), $tpl_dir = "/views/")
 	{
 
 		$this->defaults["data"]["session"] = $_SESSION;
 
-		$this->options = array_merge($this->defaults, $opts); //mescla os arrays e gurda no options
+		$this->options = array_merge($this->defaults, $opts); //mescla os arrays e guarda no options
 
-		 //criando e configurando template rain
-        // config
+		//criando e configurando template rain
 		$config = array(
-		    "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir, //vai trazer onde estah a paginas/diretorio
+		    "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"].$tpl_dir, //vai trazer para onde está a pagina/diretorio
 		    "cache_dir"     => $_SERVER["DOCUMENT_ROOT"]."/views-cache/",
-		    "debug"         => false // false, nao vamos precisar
+		    "debug"         => false 
 		);
 
 		// create the Tpl object
@@ -40,11 +39,11 @@ class Page {
 
 		$this->tpl = new Tpl();
 
-		//os dados estaram na chave 'data' desse options
+		//os dados estão na chave 'data' desse options
 		$this->setData($this->options["data"]);
 
-		//desenhar o template na tela. O 'draw' espera o nome do arquivo
-		//'draw' eh o metodo 'tpl'
+		//desenha o template na tela. O 'draw' espera o nome do arquivo
+		//'draw' é o método 'tpl'
 		if ($this->options["header"] === true) $this->tpl->draw("header");
 
 	}
@@ -64,7 +63,7 @@ class Page {
 	//para o conteudo da pagina
 	public function setTpl($name, $data = array(), $returnHTML = false)
 	{
-
+		//$data -> dados
 		$this->setData($data);
 
 		return $this->tpl->draw($name, $returnHTML);
@@ -76,7 +75,7 @@ class Page {
 	{
 		//repete em todas as paginas
 		//se mandou a opcao footer, entao carrega o footer
-		//ou seja, na tela de login, n tem o menu e o rodapé
+		//ou seja, na tela de login, não tem o menu e o rodapé
 		if ($this->options["footer"] === true) $this->tpl->draw("footer");
 
 	}

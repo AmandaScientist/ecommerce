@@ -1,20 +1,22 @@
 <?php 
-//classe Model
+//classe User
 
 namespace Hcode\Model;
 
-//o '\' eh pq eh apartir da raiz
-//usa o 'use' qdo estah em outro namespace
+//o '\' apartir da raiz
+//usa o 'use' qdo está em outro namespace
 use \Hcode\DB\Sql;
 use \Hcode\Model;
 
+//herda tudo da class Model (publico e protegido)
 class User extends Model {
 
 	const SESSION = "User";
 
-	//protected $fields = [
-		//"iduser", "idperson", "deslogin", "despassword", "inadmin", "dtregister"
-	//];
+	//campos da tabela (users, persons)
+	protected $fields = [
+		"iduser", "idperson", "deslogin", "despassword", "inadmin", "dtregister", "desperson", "nrphone", "desemail"
+	];
 
 	//user
 	public static function login($login, $password)
@@ -29,9 +31,10 @@ class User extends Model {
 		));
 
 		//se encontrou ou nao o login
-		//igual a zero, n encontrou nada, ai estoura uma exception
+		//igual a zero, não encontrou nada, estoura uma exception
 		//'\exception para encontrar a principal
 		if (count($results) === 0) {
+
 			throw new \Exception("Usuário inexistente ou senha inválida.");
 		}
 
@@ -46,7 +49,7 @@ class User extends Model {
 			//valor pra todos os campos retornados do banco
 			$user->setData($data);
 
-			//se a sessao existir ta logado, se nao tem q redirecionar
+			//se a sessao existir, o user está logado, se nao está, tem que redirecionar
 			$_SESSION[User::SESSION] = $user->getValues();
 
 			return $user;
@@ -59,7 +62,7 @@ class User extends Model {
 
 	}
 	
-	//funcao para verificar s estah logado
+	//funcao para verificar se está logado
 	public static function verifyLogin($inadmin = true)
 	{
 
@@ -70,28 +73,120 @@ class User extends Model {
 			||
 			!(int)$_SESSION[User::SESSION]["iduser"] > 0 //verifica o id do usuario
 			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin //se ta logado na administacao
+			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin //se está logado na administração
 		) {
 			
-			//se n tiver uma sessao redireciona
+			//se não tiver uma sessao, redireciona
 			header("Location: /admin/login");
 
-			exit; //exit para n fazer mais nada
-
+			exit; //exit para encerrar
 		}
-
 	}
-
+	
 	//o logout exclui a session
 	public static function logout()
 	{
 
-		//limpa essa session
+		//limpa essa session (atual)
 		$_SESSION[User::SESSION] = NULL;
 
 	}
 
+	//adicionando o método (listar usuários) do banco
+	public static function listAll(){
 
-}
+		$sql = new Sql();
+
+		return $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) ORDER BY b.desperson");
+		//após isso retorna para rota listar usuários
+	}
+
+	//método para salvar os dados no banco de dados
+	public function save() {
+
+		$sql = new Sql();
+
+		//criando uma procedure para a consulta
+		//arquivo do banco
+		//informar os dados na ordem
+
+		/*
+		pdesperson VARCHAR(64), 
+		pdeslogin VARCHAR(64), 
+		pdespassword VARCHAR(256), 
+		pdesemail VARCHAR(128), 
+		pnrphone BIGINT, 
+		pinadmin TINYINT
+		*/
+
+		//chamando essa procedure (users_save) BD
+		//CALL -> chama o retorno da chamada fornecida no primeiro parâmetro
+		$results = $sql->select("CALL sp_users_save(:desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
+		array(
+			//passando os dados que estão no objeto
+			":desperson"=>$this->getdesperson(),
+			":deslogin"=>$this->getdeslogin(),
+			":despassword"=>$this->getdespassword(),
+			":desemail"=>$this->getdesemail(),
+			":nrphone"=>$this->getnrphone(),
+			":inadmin"=>$this->getinadmin()
+		));
+
+		//primeiro registro (posição[0])
+		//setando o objeto
+		$this->setData($results[0]);
+		
+	}
+
+	//método get para editar o usuário
+	public function get($iduser)
+		{
+			$sql = new Sql();
+		
+			$results = $sql->select("SELECT * FROM tb_users a INNER JOIN tb_persons b USING(idperson) WHERE a.iduser = :iduser;", array(
+			":iduser"=>$iduser
+		));
+		
+			//dados
+			//$data = $results[0];
+		
+			$this->setData($results[0]);
+		}
+	//método para atualização (update)
+	public function update(){
+
+		$sql = new Sql();
+
+		//procedure de atualização
+		$results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)", 
+		array(
+			//passando os dados que estão no objeto
+			":iduser"=>$this->getiduser(),
+			":desperson"=>$this->getdesperson(),
+			":deslogin"=>$this->getdeslogin(),
+			":despassword"=>$this->getdespassword(),
+			":desemail"=>$this->getdesemail(),
+			":nrphone"=>$this->getnrphone(),
+			":inadmin"=>$this->getinadmin()
+		));
+
+		//primeiro registro (posição[0])
+		//setando o objeto
+		$this->setData($results[0]);
+		}
+
+	//método delete
+	public function delete(){
+
+		$sql = new Sql();
+
+		//procedure deletar
+		$sql->query("CALL sp_users_delete(:iduser)", array(
+
+			":iduser"=>$this->getiduser()
+		));
+
+		}
+	}
 
  ?>
